@@ -19,3 +19,11 @@ func GetMainCSSData() []byte {
 	}
 	return b
 }
+
+func GetFavicon() []byte {
+	b, err := os.ReadFile("logo.png")
+	if err != nil {
+		panic(err)
+	}
+	return b
+}

@@ -13,6 +13,8 @@ var (
 	templateFS embed.FS
 	//go:embed "main.css"
 	mainCSSData []byte
+	//go:embed "logo.png"
+	faviconData []byte
 )
 
 func GetCompiledTemplates(funcs template.FuncMap) *template.Template {
@@ -21,4 +23,8 @@ func GetCompiledTemplates(funcs template.FuncMap) *template.Template {
 
 func GetMainCSSData() []byte {
 	return mainCSSData
+}
+
+func GetFavicon() []byte {
+	return faviconData
 }

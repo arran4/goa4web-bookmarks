@@ -58,6 +58,9 @@ func main() {
 	r.HandleFunc("/main.css", func(writer http.ResponseWriter, request *http.Request) {
 		_, _ = writer.Write(GetMainCSSData())
 	}).Methods("GET")
+	r.HandleFunc("/favicon.ico", func(writer http.ResponseWriter, request *http.Request) {
+		_, _ = writer.Write(GetFavicon())
+	}).Methods("GET")
 
 	// News
 	r.Handle("/", http.HandlerFunc(runTemplate("indexPage.gohtml"))).Methods("GET")
