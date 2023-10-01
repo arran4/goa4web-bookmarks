@@ -41,5 +41,20 @@ dockers:
       - "ghcr.io/arran4/goa4web-bookmarks:{{ .Tag }}"
       - "ghcr.io/arran4/goa4web-bookmarks:latest"
 
+nfpms:
+  -
+    vendor: Ubels Software Development
+    homepage: https://github.com/arran4/
+    maintainer: Arran Ubels <arran@ubels.com.au>
+    description: NA
+    license: Private
+    formats:
+      - apk
+      - deb
+      - rpm
+    release: 1
+    section: default
+    priority: extra
+
 # yaml-language-server: $schema=https://goreleaser.com/static/schema.json
 # vim: set ts=2 sw=2 tw=0 fo=cnqoj
