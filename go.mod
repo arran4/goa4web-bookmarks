@@ -18,7 +18,7 @@ require (
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/gorilla/securecookie v1.1.1 // indirect
 	golang.org/x/crypto v0.31.0 // indirect
-	golang.org/x/net v0.23.0 // indirect
+	golang.org/x/net v0.33.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/protobuf v1.33.0 // indirect
 )
