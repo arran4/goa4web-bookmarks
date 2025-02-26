@@ -14,7 +14,7 @@ require (
 )
 
 require (
-	github.com/go-jose/go-jose/v3 v3.0.3 // indirect
+	github.com/go-jose/go-jose/v3 v3.0.4 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/gorilla/securecookie v1.1.1 // indirect
 	golang.org/x/crypto v0.21.0 // indirect
