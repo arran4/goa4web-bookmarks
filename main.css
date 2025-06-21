@@ -1,6 +1,9 @@
 body {
-	background-color: #FFFBF0;
-	color: #800000;
+        background-color: #FFFBF0;
+        color: #800000;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
 }
 a {
 	background-color: transparent;
@@ -63,9 +66,10 @@ div.title {
 	background-color: transparent;
 }
 .footnote {
-	font-size: 0.6em;
-	text-align: right;
-	font-family: tahoma, arial, helvetica, sans-serif;
+        font-size: 0.6em;
+        text-align: center;
+        font-family: tahoma, arial, helvetica, sans-serif;
+        margin-top: 1em;
 }
 .textleft {
 	text-align: left;
@@ -82,9 +86,143 @@ div.title {
 	background-color: transparent;
 }
 .textcenter {
-	text-align: center;
-	font-family: tahoma, arial, helvetica, sans-serif;
-	font-size: 0.8em;
-	color: #800000;
-	background-color: transparent;
+        text-align: center;
+        font-family: tahoma, arial, helvetica, sans-serif;
+        font-size: 0.8em;
+        color: #800000;
+        background-color: transparent;
+}
+
+.bookmarkPage {
+        min-height: 100vh;
+}
+
+.bookmarkHr {
+        margin: 1em 0;
+        border: none;
+        border-top: 1px solid #800000;
+}
+
+.edit-link {
+        font-size: small;
+        margin-left: 0.3em;
+        text-decoration: none;
+}
+
+body:not(.edit-mode) .edit-link {
+        display: none;
+}
+
+.edit-form textarea {
+        width: 90vw;
+        height: 80vh;
+        font-family: monospace;
+}
+
+.category-form textarea {
+        height: 30vh;
+}
+
+.cssColumns .bookmarkColumns {
+        column-width: 18em;
+        column-gap: 1em;
+}
+
+.cssColumns .columnBreak {
+        break-before: column;
+}
+
+.cssColumns .categoryBlock {
+        break-inside: avoid;
+        page-break-inside: avoid;
+        -webkit-column-break-inside: avoid;
+}
+
+/* Keep navigation bar fixed on the left */
+#nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 200px;
+    height: 100vh;
+    overflow-y: auto;
+}
+
+/* Offset main content to the right of the fixed nav */
+#layout {
+    margin-left: 200px;
+}
+
+#bottom {
+    flex-grow: 1;
+}
+
+.move-handle {
+    cursor: move;
+    margin-right: 0.3em;
+}
+
+.categoryBlock.drag-over {
+    outline: 2px dotted #800000;
+}
+
+#tab-list li.drag-over,
+#page-list li.drag-over {
+    outline: 2px dotted #800000;
+}
+
+.newColumnDropZone,
+.columnEndDropZone {
+    display: inline-block;
+    border: 2px dotted #800000;
+}
+
+.newColumnDropZone {
+    width: 1em;
+    min-height: 50vh;
+    margin-left: 0.5em;
+}
+
+.columnEndDropZone {
+    width: 100%;
+    min-height: 150px;
+    margin-left: 0;
+    margin-top: 0.5em;
+}
+
+.add-category-link {
+    display: block;
+    text-align: center;
+    font-size: small;
+    text-decoration: none;
+}
+
+body:not(.edit-mode) .add-category-link {
+    display: none;
+}
+
+body:not(.edit-mode) .newColumnDropZone,
+body:not(.edit-mode) .columnEndDropZone {
+    display: none;
+}
+
+.moveIcon {
+    cursor: move;
+    margin-right: 0.2em;
+}
+
+.categoryBlock h2 {
+    cursor: move;
+}
+
+body:not(.edit-mode) .categoryBlock h2 {
+    cursor: default;
+}
+
+body:not(.edit-mode) .moveIcon {
+    display: none;
+}
+
+body:not(.edit-mode) .move-handle {
+    display: none;
 }

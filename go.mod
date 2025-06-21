@@ -1,8 +1,11 @@
 module github.com/arran4/goa4web-bookmarks
 
-go 1.18
+go 1.23.0
+
+toolchain go1.23.8
 
 require (
+	github.com/PuerkitoBio/goquery v1.8.1
 	github.com/arran4/gorillamuxlogic v1.0.1
 	github.com/coreos/go-oidc/v3 v3.6.0
 	github.com/go-sql-driver/mysql v1.7.1
@@ -10,10 +13,12 @@ require (
 	github.com/gorilla/mux v1.8.0
 	github.com/gorilla/sessions v1.2.1
 	github.com/mattn/go-sqlite3 v1.14.17
+	golang.org/x/image v0.28.0
 	golang.org/x/oauth2 v0.12.0
 )
 
 require (
+	github.com/andybalholm/cascadia v1.3.1 // indirect
 	github.com/go-jose/go-jose/v3 v3.0.4 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/gorilla/securecookie v1.1.1 // indirect

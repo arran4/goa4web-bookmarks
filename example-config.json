@@ -1,0 +1,14 @@
+{
+  "external_url": "http://localhost:8080",
+  "oauth2_client_id": "",
+  "oauth2_secret": "",
+  "oauth2_auth_url": "",
+  "oauth2_token_url": "",
+  "css_columns": true,
+  "namespace": "",
+  "title": "Goa4web Bookmarks",
+  "favicon_cache_dir": "/data/favicons",
+  "favicon_cache_size": 20971520,
+  "no_footer": false,
+  "session_key": ""
+}

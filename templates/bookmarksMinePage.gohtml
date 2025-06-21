@@ -1,4 +1,5 @@
 {{ template "head" $ }}
+    {{ if not $.UseCssColumns }}
     <table>
         <tr valign="top">
             {{- range bookmarkColumns }}
@@ -15,5 +16,24 @@
             {{- end }}
         </tr>
     </table>
+    {{ else }}
+    <div class="bookmarkColumns">
+        {{- $first := true }}
+        {{- range bookmarkColumns }}
+            {{- if not $first }}<div class="columnBreak"></div>{{ end }}
+            {{- range .Categories }}
+                <div class="categoryBlock">
+                    <h2>{{ .Name }}</h2>
+                    <ul>
+                        {{- range .Entries }}
+                            <li><a href="{{ .Url }}" target="_blank">{{ .Name }}</a>
+                        {{- end }}
+                    </ul>
+                </div>
+            {{- end }}
+            {{- $first = false }}
+        {{- end }}
+    </div>
+    {{ end }}
     <hr><a href="/bookmarks/edit">EDIT</a><br>
 {{ template "tail" $ }}
