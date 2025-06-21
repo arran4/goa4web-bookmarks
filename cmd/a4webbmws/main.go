@@ -8,6 +8,7 @@ import (
 	"crypto/x509"
 	"crypto/x509/pkix"
 	"encoding/pem"
+	"flag"
 	"fmt"
 	. "github.com/arran4/goa4web-bookmarks"
 	"github.com/arran4/gorillamuxlogic"
@@ -21,34 +22,126 @@ import (
 	"os"
 	"os/signal"
 	"reflect"
+	"strconv"
+	"strings"
 	"sync"
 	"time"
 )
 
 var (
-	clientID     = os.Getenv("OAUTH2_CLIENT_ID")
-	clientSecret = os.Getenv("OAUTH2_SECRET")
-	externalUrl  = os.Getenv("EXTERNAL_URL")
-	redirectUrl  = fmt.Sprintf("%s/oauth2Callback", externalUrl)
-	version      = "dev"
-	commit       = "none"
-	date         = "unknown"
+	clientID       string
+	clientSecret   string
+	externalUrl    string
+	redirectUrl    string
+	oauth2AuthURL  string
+	oauth2TokenURL string
+	version        = "dev"
+	commit         = "none"
+	date           = "unknown"
 )
 
 func init() {
 	log.SetFlags(log.Flags() | log.Lshortfile)
 	SessionName = "a4webbookmarks"
 	SessionStore = sessions.NewCookieStore([]byte("random-key")) // TODO random key
+}
+
+func main() {
+	envPath := os.Getenv("GOBM_ENV_FILE")
+	if envPath == "" {
+		envPath = "/etc/goa4web-bookmarks/goa4web-bookmarks.env"
+	}
+	if err := LoadEnvFile(envPath); err != nil {
+		log.Printf("unable to load env file %s: %v", envPath, err)
+	}
+
+	clientID = os.Getenv("OAUTH2_CLIENT_ID")
+	clientSecret = os.Getenv("OAUTH2_SECRET")
+
+	cfg := Config{
+		Oauth2ClientID:  os.Getenv("OAUTH2_CLIENT_ID"),
+		Oauth2Secret:    os.Getenv("OAUTH2_SECRET"),
+		Oauth2AuthURL:   os.Getenv("OAUTH2_AUTH_URL"),
+		Oauth2TokenURL:  os.Getenv("OAUTH2_TOKEN_URL"),
+		ExternalURL:     os.Getenv("EXTERNAL_URL"),
+		CssColumns:      os.Getenv("GBM_CSS_COLUMNS") != "",
+		Namespace:       os.Getenv("GBM_NAMESPACE"),
+		Title:           os.Getenv("GBM_TITLE"),
+		FaviconCacheDir: os.Getenv("FAVICON_CACHE_DIR"),
+		NoFooter:        os.Getenv("GBM_NO_FOOTER") != "",
+		SessionKey:      os.Getenv("SESSION_KEY"),
+	}
+	if v := os.Getenv("FAVICON_CACHE_SIZE"); v != "" {
+		if i, err := strconv.ParseInt(v, 10, 64); err == nil {
+			cfg.FaviconCacheSize = i
+		}
+	}
+
+	configPath := DefaultConfigPath()
+	var cfgFlag string
+	var versionFlag bool
+	flag.StringVar(&cfgFlag, "config", configPath, "path to config file")
+	flag.BoolVar(&versionFlag, "version", false, "show version")
+	flag.Parse()
+	if versionFlag {
+		fmt.Printf("a4webbmws %s commit %s built %s\n", version, commit, date)
+		return
+	}
+	if cfgFlag != "" {
+		configPath = cfgFlag
+	}
+	cfgSpecified := cfgFlag != "" || os.Getenv("GOBM_CONFIG_FILE") != ""
+	if fileCfg, found, err := LoadConfigFile(configPath); err == nil {
+		if found {
+			MergeConfig(&cfg, fileCfg)
+		}
+	} else {
+		if os.IsNotExist(err) && !cfgSpecified {
+			log.Printf("config file %s not found", configPath)
+		} else {
+			log.Fatalf("unable to load config file %s: %v", configPath, err)
+		}
+	}
+
+	UseCssColumns = cfg.CssColumns
+	Namespace = cfg.Namespace
+	SiteTitle = cfg.Title
+	NoFooter = cfg.NoFooter
+	Oauth2ClientID = cfg.Oauth2ClientID
+	Oauth2ClientSecret = cfg.Oauth2Secret
+	oauth2AuthURL = cfg.Oauth2AuthURL
+	oauth2TokenURL = cfg.Oauth2TokenURL
+	if Oauth2ClientID != "" {
+		clientID = Oauth2ClientID
+	}
+	if Oauth2ClientSecret != "" {
+		clientSecret = Oauth2ClientSecret
+	}
+	if cfg.FaviconCacheDir != "" {
+		FaviconCacheDir = cfg.FaviconCacheDir
+	}
+	if cfg.FaviconCacheSize != 0 {
+		FaviconCacheSize = cfg.FaviconCacheSize
+	} else {
+		FaviconCacheSize = DefaultFaviconCacheSize
+	}
+
+	externalUrl = strings.TrimRight(cfg.ExternalURL, "/")
+	redirectUrl = fmt.Sprintf("%s/oauth2Callback", externalUrl)
+	OauthRedirectURL = redirectUrl
+
+	endpoint := oauth2.Endpoint{AuthURL: cfg.Oauth2AuthURL, TokenURL: cfg.Oauth2TokenURL}
+	if endpoint.AuthURL == "" && endpoint.TokenURL == "" {
+		endpoint = endpoints.Google
+	}
 	Oauth2Config = &oauth2.Config{
 		ClientID:     clientID,
 		ClientSecret: clientSecret,
 		RedirectURL:  redirectUrl,
 		Scopes:       []string{"https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/userinfo.profile"},
-		Endpoint:     endpoints.Google,
+		Endpoint:     endpoint,
 	}
-}
 
-func main() {
 	r := mux.NewRouter()
 
 	r.Use(DBAdderMiddleware)
@@ -77,6 +170,7 @@ func main() {
 
 	r.HandleFunc("/logout", runHandlerChain(UserLogoutAction, runTemplate("userLogoutPage.gohtml"))).Methods("GET")
 	r.HandleFunc("/oauth2Callback", runHandlerChain(Oauth2CallbackPage, redirectToHandler("/bookmarks/mine"))).Methods("GET")
+	r.HandleFunc("/proxy/favicon", FaviconProxyHandler).Methods("GET")
 
 	http.Handle("/", r)
 

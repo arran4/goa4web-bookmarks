@@ -19,17 +19,21 @@ func CoreAdderMiddleware(next http.Handler) http.Handler {
 		userRef, _ := session.Values["UserRef"].(string)
 
 		ctx := context.WithValue(request.Context(), ContextValues("coreData"), &CoreData{
-			UserRef: userRef,
-			Title:   "Arran4's Bookmarks Website",
+			UserRef:       userRef,
+			Title:         SiteTitle,
+			NoFooter:      NoFooter,
+			UseCssColumns: UseCssColumns,
 		})
 		next.ServeHTTP(writer, request.WithContext(ctx))
 	})
 }
 
 type CoreData struct {
-	Title       string
-	AutoRefresh bool
-	UserRef     string
+	Title         string
+	AutoRefresh   bool
+	UserRef       string
+	NoFooter      bool
+	UseCssColumns bool
 }
 
 type Configuration struct {

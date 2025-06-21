@@ -76,6 +76,28 @@ The docker container is available in ghcr.io:
 You can get the binaries directly from the release tag:
 * https://github.com/arran4/goa4web-bookmarks/releases/tag/v1.0.0
 
+## Configuration
+
+Runtime settings are loaded from an environment file and an optional JSON configuration file.
+By default the server reads `/etc/goa4web-bookmarks/goa4web-bookmarks.env` and
+`/etc/goa4web-bookmarks/config.json`. The paths can be overridden with the
+`GOBM_ENV_FILE` and `GOBM_CONFIG_FILE` environment variables or the `-config` command line flag.
+
+`example-config.json` and `example.env` in the repository show the expected format.
+
+Database settings are controlled by `DB_CONNECTION_PROVIDER` and `DB_CONNECTION_STRING`.
+Other options include OAuth2 endpoints and credentials, site title, namespace, whether CSS
+columns are enabled, favicon cache directory and size, and a flag to hide the footer.
+
+If OAuth2 URLs are not provided the Google endpoints are used by default.
+
+## Running with Docker
+
+```
+docker build -t goa4web-bookmarks .
+docker run -p 8080:8080 -p 8443:8443 -v $(pwd)/data:/data goa4web-bookmarks
+```
+
 # Motivation:
 
 See: https://open.substack.com/pub/arranubels/p/quicklinks?r=1ner06&utm_campaign=post&utm_medium=web

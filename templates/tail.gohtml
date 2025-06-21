@@ -1,11 +1,13 @@
 {{define "tail"}}
-		</table>
-		<div id="bottom"></div>
-		<hr>
-		<center>
-			Date and time is now: {{now}}<br>
-			<i>Arran4© 2004-2005, 2023; All works on this page copyrighted to their respective authors.</i>
-		</center>
-	</body>
+                </table>
+                <div id="bottom"></div>
+                {{ if not $.NoFooter }}
+                <hr>
+                <center>
+                        Date and time is now: {{now}}<br>
+                        <i>Arran4© 2004-2005, 2023-{{ now.Format "2006" }}; All works on this page copyrighted to their respective authors.</i>
+                </center>
+                {{ end }}
+        </body>
 </html>
 {{end}}
