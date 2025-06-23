@@ -1,31 +1,19 @@
+version: 2
 project_name: a4webbm
 builds:
-  - env:
-      - CGO_ENABLED=1
-    goos:
-      - linux
-#      - windows
-#      - darwin
-    main: ./cmd/a4webbmws
-    id: "a4webbmws"
+  - id: "a4webbmws"
     binary: a4webbmws
-    goarch:
-      - amd64
-#      - arm
-#      - arm64
-
+    dir: cmd/a4webbmws
+    env:
+      - CGO_ENABLED=1
+    flags: ["-trimpath"]
+    goos: [linux]
+    goarch: [amd64, arm64]
 archives:
-  - format: tar.gz
-    name_template: >-
-      {{ .ProjectName }}_
-      {{- title .Os }}_
-      {{- if eq .Arch "amd64" }}x86_64
-      {{- else if eq .Arch "386" }}i386
-      {{- else }}{{ .Arch }}{{ end }}
-      {{- if .Arm }}v{{ .Arm }}{{ end }}
+  -
     format_overrides:
-    - goos: windows
-      format: zip
+      - goos: windows
+        format: zip
 checksum:
   name_template: 'checksums.txt'
 snapshot:
@@ -38,12 +26,30 @@ changelog:
       - '^test:'
 dockers:
   - image_templates:
-      - "ghcr.io/arran4/goa4web-bookmarks:{{ .Tag }}"
-      - "ghcr.io/arran4/goa4web-bookmarks:latest"
-
+      - "ghcr.io/arran4/goa4web-bookmarks:{{ .Tag }}-amd64"
+      - "ghcr.io/arran4/goa4web-bookmarks:latest-amd64"
+    dockerfile: Dockerfile
+    goos: linux
+    goarch: amd64
+    use: buildx
+  - image_templates:
+      - "ghcr.io/arran4/goa4web-bookmarks:{{ .Tag }}-arm64"
+      - "ghcr.io/arran4/goa4web-bookmarks:latest-arm64"
+    dockerfile: Dockerfile
+    goos: linux
+    goarch: arm64
+    use: buildx
+docker_manifests:
+  - name_template: "ghcr.io/arran4/goa4web-bookmarks:{{ .Tag }}"
+    image_templates:
+      - "ghcr.io/arran4/goa4web-bookmarks:{{ .Tag }}-amd64"
+      - "ghcr.io/arran4/goa4web-bookmarks:{{ .Tag }}-arm64"
+  - name_template: "ghcr.io/arran4/goa4web-bookmarks:latest"
+    image_templates:
+      - "ghcr.io/arran4/goa4web-bookmarks:latest-amd64"
+      - "ghcr.io/arran4/goa4web-bookmarks:latest-arm64"
 nfpms:
-  -
-    vendor: Ubels Software Development
+  - vendor: Ubels Software Development
     homepage: https://github.com/arran4/
     maintainer: Arran Ubels <arran@ubels.com.au>
     description: NA
@@ -55,6 +61,5 @@ nfpms:
     release: 1
     section: default
     priority: extra
-
 # yaml-language-server: $schema=https://goreleaser.com/static/schema.json
 # vim: set ts=2 sw=2 tw=0 fo=cnqoj

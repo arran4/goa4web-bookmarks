@@ -93,9 +93,16 @@ If OAuth2 URLs are not provided the Google endpoints are used by default.
 
 ## Running with Docker
 
+The Docker image now uses an Alpine base image. Run it with the required
+database environment variables:
+
 ```
 docker build -t goa4web-bookmarks .
-docker run -p 8080:8080 -p 8443:8443 -v $(pwd)/data:/data goa4web-bookmarks
+docker run -p 8080:8080 -p 8443:8443 \ 
+  -v $(pwd)/data:/data \
+  -e DB_CONNECTION_PROVIDER=sqlite3 \
+  -e DB_CONNECTION_STRING='file:/data/a4webbookmarks.db?_loc=auto' \
+  goa4web-bookmarks
 ```
 
 # Motivation:
