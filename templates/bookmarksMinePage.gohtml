@@ -1,39 +1,48 @@
 {{ template "head" $ }}
-    {{ if not $.UseCssColumns }}
-    <table>
-        <tr valign="top">
-            {{- range bookmarkColumns }}
+{{- range $i, $p := bookmarkPages }}
+<div class="bookmarkPage{{ if $.UseCssColumns }} cssColumns{{ end }}" id="page{{$i}}">
+    {{- if $p.Name }}<h2>{{ $p.Name }}</h2>{{ end }}
+    {{- range $p.Blocks }}
+        {{- if .HR }}
+        <hr class="bookmarkHr" />
+        {{- else if $.UseCssColumns }}
+        <div class="bookmarkColumns">
+            {{- $first := true }}
+            {{- range .Columns }}
+                {{- if not $first }}<div class="columnBreak"></div>{{ end }}
+                {{- range .Categories }}
+                    <div class="categoryBlock">
+                        <h2>{{ .DisplayName }}</h2>
+                        <ul>
+                            {{- range .Entries }}
+                                <li><a href="{{ .Url }}" target="_blank">{{ .DisplayName }}</a></li>
+                            {{- end }}
+                        </ul>
+                    </div>
+                {{- end }}
+                {{- $first = false }}
+            {{- end }}
+        </div>
+        {{- else }}
+        <table>
+            <tr valign="top">
+                {{- range .Columns }}
                 <td>
                     {{- range .Categories }}
                         <ul>
-                            <h2>{{ .Name }}</h2>
+                            <h2>{{ .DisplayName }}</h2>
                             {{- range .Entries }}
-                                <li><a href="{{ .Url }}" target="_blank">{{ .Name }}</a>
+                                <li><a href="{{ .Url }}" target="_blank">{{ .DisplayName }}</a></li>
                             {{- end }}
                         </ul>
                     {{- end }}
                 </td>
-            {{- end }}
-        </tr>
-    </table>
-    {{ else }}
-    <div class="bookmarkColumns">
-        {{- $first := true }}
-        {{- range bookmarkColumns }}
-            {{- if not $first }}<div class="columnBreak"></div>{{ end }}
-            {{- range .Categories }}
-                <div class="categoryBlock">
-                    <h2>{{ .Name }}</h2>
-                    <ul>
-                        {{- range .Entries }}
-                            <li><a href="{{ .Url }}" target="_blank">{{ .Name }}</a>
-                        {{- end }}
-                    </ul>
-                </div>
-            {{- end }}
-            {{- $first = false }}
+                {{- end }}
+            </tr>
+        </table>
         {{- end }}
-    </div>
-    {{ end }}
-    <hr><a href="/bookmarks/edit">EDIT</a><br>
+    {{- end }}
+</div>
+{{- end }}
+<hr><a href="/bookmarks/edit">EDIT</a><br>
 {{ template "tail" $ }}

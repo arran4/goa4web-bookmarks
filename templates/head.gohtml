@@ -14,18 +14,32 @@
 	<body>
 		<strong>Arran4</strong>'s bookmarks tool.
 		<br>
-		<table border=0>
-			<tr valign=top>
-				<td width=200px>
-					<a href="/">Home</a><br>
-					{{ if $.UserRef }}
-						<a href="/bookmarks">Bookmarks</a><br>
-						<hr>
-						<a href="/logout">Logout</a><br>
-						<a href="/bookmarks/mine">Mine</a><br>
-						<a href="/bookmarks/edit">Edit Mine</a><br>
-					{{ else }}
-						<a href="{{ OAuth2URL }}">Login</a><br>
-					{{ end }}
-				<td>
+                <table border=0 id="layout">
+                        <tr valign=top>
+                                <td width=200px id="nav">
+                                        <a href="/">Home</a><br>
+                                        {{ if $.UserRef }}
+                                                <a href="/bookmarks">Bookmarks</a><br>
+                                                <hr>
+                                                <a href="/logout">Logout</a><br>
+                                                <a href="/bookmarks/mine">Mine</a><br>
+                                                <a href="/bookmarks/edit">Edit Mine</a><br>
+                                                <hr/>
+                                                <b>Tabs</b>
+                                                <ul id="tab-list" style="list-style-type:none;padding-left:0;">
+                                                        {{- range bookmarkTabs }}
+                                                        <li><a href="{{ .Href }}">{{ .IndexName }}</a></li>
+                                                        {{- end }}
+                                                </ul>
+                                                <hr/>
+                                                <b>Pages</b>
+                                                <ul id="page-list" style="list-style-type:none;padding-left:0;">
+                                                        {{- range $i, $p := bookmarkPages }}
+                                                                <li><a href="#page{{$i}}">Page {{ if $p.IndexName }}{{$p.IndexName}}{{ else }}{{ add1 $i }}{{ end }}</a></li>
+                                                        {{- end }}
+                                                </ul>
+                                        {{ else }}
+                                                <a href="{{ OAuth2URL }}">Login</a><br>
+                                        {{ end }}
+                                <td>
 {{end}}
