@@ -1,7 +1,9 @@
 # goa4web-bookmarks
 
-Goa4webb-ookmarks is a Spin out from [goa4web](https://github.com/arran4/goa4web/), which is a chatGPT aided 
-(with slight enhancement) conversion of [a4web](https://github.com/arran4/a4web/) (a c++ website I made while in 
+> **Deprecated**: This project is no longer maintained. It has been superseded by [gobookmarks](https://github.com/arran4/gobookmarks) which provides the same functionality with additional features. Please migrate to that project.
+
+Goa4webb-ookmarks is a Spin out from [goa4web](https://github.com/arran4/goa4web/), which is a chatGPT aided
+(with slight enhancement) conversion of [a4web](https://github.com/arran4/a4web/) (a c++ website I made while in
 university in 2005-6) into go.
 
 This project isn't designed to be used directly. Feel free to fork, copy, or submit PRs if you wish to use it for 
